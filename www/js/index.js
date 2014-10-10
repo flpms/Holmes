@@ -1,74 +1,20 @@
-var App = {
-	initialize: function() {
-		console.info("App Start");
-		this.bindEvents();
-	},
-	bindEvents: function() {
-		document.addEventListener('deviceready', this.onDeviceReady, false);
-		console.info("Device Ready");
-	},
-	onDeviceReady: function(evt) {
-		console.info("Evt: "+evt.type);
-		App.receivedEvent(evt.type);
-	},
-	receivedEvent: function(id) {
-		console.info("Call AppMenu \n"+id);
-		AppMenu.initialize();
-	}
-};
-
-var Login = {
-	initialize:function() {
-		document.getElementById("Login").style.display = "block";
-		document.getElementById("close").addEventListener('touchstart',this.close,false);
-		for (var i = 0; i < AppMenuItens.itens.length; i++) {
-			document.getElementById('content-'+AppMenuItens.itens[i].id).classList.add("bluringBack");
-		}
-	},
-	close:function(){
-		for (var i = 0; i < AppMenuItens.itens.length; i++) {
-			document.getElementById('content-'+AppMenuItens.itens[i].id).classList.remove("bluringBack");
-		}
-		document.getElementById("Login").style.display = "none";
-	}
-};
-
-var Holmes = {
-	initialize: function() {
-		console.info("Holmes On");
-	},
-	userId:'',
-	actived:false,
-	activeHolmes: function(e) {
-		console.log(this.checked);
-		if(!this.checked) {
-			if (Holmes.userId !== '') {
-				document.getElementById("Holmes").style.display = "block";
-			} else {
-				Login.initialize();
-			}
-		} else {
-			document.getElementById("Holmes").style.display = "none";
-		}
-	}
-};
-
 var AppMenu = {
-	hide: true,
-	itens:'',
-	initialize:function() {
-		this.bindEvents();
-		console.info("Menu Ready");
+	_namespace:'AppMenu',
+	_hide: true,
+	_itens:'',
+	
+	_log : function(evt) {
+		console.log(this._namespace + ' : ' + evt);
 	},
-	bindEvents:function() {
+	bindEvents : function() {
 		var buttonMenu = document.getElementById("btnShowMenu");
-		buttonMenu.addEventListener('touchstart', this.actionMenu,false);
-		buttonMenu.addEventListener('click', this.actionMenu,false);
+		buttonMenu.addEventListener('touchstart', AppMenu.actionMenu,false);
+		//buttonMenu.addEventListener('click', AppMenu.actionMenu,false);
 		document.getElementById("main-nav").addEventListener('touchmove', this.actionMenu,false);
-		console.info("Events Ready");
+		this._log("Events Ready");
 	},
-	actionMenu: function(evt) {
-		console.log(evt);
+	actionMenu : function(evt) {
+		this._log(evt);
 		evt.preventDefault();
 		if(AppMenu.hide) {
 			document.getElementById("control").classList.add("menu-active");
@@ -78,31 +24,35 @@ var AppMenu = {
 			document.getElementById("control").classList.remove("menu-active");
 			AppMenu.hide = true;
 		}
+	},
+	initialize: function() {
+		this._log("Initialize Menu");
+		this.bindEvents();
+		this._log("Menu Ready");
 	}
 };
 
 var AppMenuItens = {
+	_namespace:'AppMenu',
 	itens:'',
-	initialize: function (){
-		this.bindEvents();
-		console.info("Itens Ready");
+	_log : function(evt) {
+		console.log(this._namespace + ' : ' + evt);
 	},
-	bindEvents: function () {
+	_bindEvents: function () {
 		this.itens = document.getElementById("mainNav").getElementsByTagName("li");
 		for (var i = 0; i < this.itens.length; i++) {
 			document.getElementById(this.itens[i].id).addEventListener('touchstart', this.swapItens, false);
 			document.getElementById(this.itens[i].id).addEventListener('click', this.swapItens, false);
 		}
-		console.log("Events ready for: ["+this.itens.length+"] itens");
-		return;
+		this._log("Events ready for: ["+this.itens.length+"] itens");
 	},//for better perfomance, remove events
-	unbind:function() {
+	_unbind:function() {
 		for (var i = 0; i < this.itens.length; i++) {
 			document.getElementById(this.itens[i].id).removeEventListener('touchstart', this.swapItens, false);
 		}
-		console.info('Itens Removed');
+		this._log('Itens Removed');
 	},
-	swapItens: function(evt) {
+	_swapItens: function(evt) {
 		evt.preventDefault();
 		for (var i = 0; i < AppMenuItens.itens.length; i++) {
 			if (this.id === AppMenuItens.itens[i].id) {
@@ -118,44 +68,86 @@ var AppMenuItens = {
 				document.getElementById(AppMenuItens.itens[i].id).classList.remove("item-active");
 			}
 		}
-		return;
-	}
-};
-
-var Search = {
-	initialize: function() {
+	},
+	initialize: function (){
 		this.bindEvents();
-		console.log("Search On");
+		this._log("Itens Ready");
 	},
-	bindEvents: function() {
-		document.getElementById("btnSearch").addEventListener("touchstart",function(e) { e.preventDefault(); this.search; }, false);
-		try {
-			Holmes.initialize();
-			document.getElementById("activeHolmes").addEventListener("touchstart", Holmes.activeHolmes, false);
-		} catch (e) {
-			console.log(e);
-		}
-	},
-	search: function() {
-	    var query = "";
-	    if (Holmes.actived) {
-			query = document.getElementById("query").value;
-	    } else {
-			query = document.getElementById("query").value;
-	    }
-	    var params = "q="+query;
-	    var xhr = new XMLHttpRequest();
-	    xhr.open('get', 'http://192.168.25.4:1337', true);
-	    xhr.setRequestHeader("Content-type", "application/json");
-	    xhr.onload = function () {
-			var response = JSON.parse(xhr.response);
-			console.log(response);
-	    };
-		xhr.onerror = function () {
-			console.log("Erro AJAX");
-		};
-		xhr.send(params);
-	}
 };
+// var Login = {
+// 	initialize:function() {
+// 		document.getElementById("Login").style.display = "block";
+// 		document.getElementById("close").addEventListener('touchstart',this.close,false);
+// 		for (var i = 0; i < AppMenuItens.itens.length; i++) {
+// 			document.getElementById('content-'+AppMenuItens.itens[i].id).classList.add("bluringBack");
+// 		}
+// 	},
+// 	close:function(){
+// 		for (var i = 0; i < AppMenuItens.itens.length; i++) {
+// 			document.getElementById('content-'+AppMenuItens.itens[i].id).classList.remove("bluringBack");
+// 		}
+// 		document.getElementById("Login").style.display = "none";
+// 	}
+// };
 
-App.initialize();
+// var Holmes = {
+// 	initialize: function() {
+// 		console.log("Holmes On");
+// 	},
+// 	userId:'',
+// 	actived:false,
+// 	activeHolmes: function(e) {
+// 		console.log(this.checked);
+// 		if(!this.checked) {
+// 			if (Holmes.userId !== '') {
+// 				document.getElementById("Holmes").style.display = "block";
+// 			} else {
+// 				Login.initialize();
+// 			}
+// 		} else {
+// 			document.getElementById("Holmes").style.display = "none";
+// 		}
+// 	}
+// };
+
+
+// var Search = {
+// 	initialize: function() {
+// 		this.bindEvents();
+// 		console.log("Search On");
+// 	},
+// 	bindEvents: function() {
+// 		document.getElementById("btnSearch").addEventListener("touchstart",function(e) { e.preventDefault(); this.search; }, false);
+// 		try {
+// 			Holmes.initialize();
+// 			document.getElementById("activeHolmes").addEventListener("touchstart", Holmes.activeHolmes, false);
+// 		} catch (e) {
+// 			console.log(e);
+// 		}
+// 	},
+// 	search: function() {
+// 	    var query = "";
+// 	    if (Holmes.actived) {
+// 			query = document.getElementById("query").value;
+// 	    } else {
+// 			query = document.getElementById("query").value;
+// 	    }
+// 	    var params = "q="+query;
+// 	    var xhr = new XMLHttpRequest();
+// 	    xhr.open('get', 'http://192.168.25.4:1337', true);
+// 	    xhr.setRequestHeader("Content-type", "application/json");
+// 	    xhr.onload = function () {
+// 			var response = JSON.parse(xhr.response);
+// 			console.log(response);
+// 	    };
+// 		xhr.onerror = function () {
+// 			console.log("Erro AJAX");
+// 		};
+// 		xhr.send(params);
+// 	}
+// };
+
+function onDeviceReady() {
+	console.log('ready');
+	AppMenu.initialize();
+};

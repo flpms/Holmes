@@ -9,17 +9,24 @@
 		<link rel="stylesheet" type="text/css" href="css/durusans.css" />
 		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
 		<link rel="stylesheet" type="text/css" href="css/index.css" />
-		<link rel="stylesheet" type="text/css" href="css/index-mobile.css" media="print (max-width: )"/>
 		<title>Holmes</title>
-		<script type="text/javascript" src="cordova.js"></script>
+		<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
 		
+		<script type="text/javascript" charset="utf-8">
+		
+		function onLoad() {
+			document.addEventListener('deviceready', onDeviceReady, false);
+			//document.addEventListener('onload', onDeviceReady, false);
+			console.log("Device Ready");
+		};
+		</script>
 	</head>
-	<body>
+	<body onload="onLoad()">
 		<div id="fb-root"></div>
 		<div class="" id="control">
 			<header>
 				<h1><span class="icon-holmes"></span> Holmes</h1>
-				<div id="btnShowMenu"><span class="glyphicon glyphicon-tasks"></span></div>
+				<div id="btnShowMenu" style="outline:red 1px solid"><span class="glyphicon glyphicon-tasks"></span></div>
 			</header>
 			<nav id="main-nav">
 				<ul>
@@ -30,6 +37,7 @@
 				</ul>
 			</nav>
 			<div id="content">
+
 				<div id="Login">
 					<h5>Login</h5>
 					<button id="close">close</button>
@@ -83,7 +91,6 @@
 				</div>
 			</div>
 		</div>
-		<script src="phonegap.js"></script>
-		<script src="js/index.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/index.js"></script>
 	</body>
 </html>

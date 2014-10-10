@@ -36,8 +36,11 @@ header {
 	color: #16636E; 
 	height: 34px; 
 	padding-top: 10px; 
+	position: relative;
 	overflow: hidden; 
 	text-shadow: 0 1px #FFE4AA;
+	z-index: 1000;
+	width: 100%;
 }
 
 header h1 { 
